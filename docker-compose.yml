@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+    logger:
+        image: python:3.8
+        command: [
+            "python", "/log_server.py", "-f", "/var/log/log_server/", "--port", "9020", "--stdout"
+        ]
+        volumes:
+            - "./log_server.py:/log_server.py:ro"
+            - "./log:/var/log/log_server:rw"
+        ports:
+            - target: 9020
+              published: 9020
+              protocol: tcp
+              mode: host
+
