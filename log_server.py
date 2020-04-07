@@ -99,28 +99,47 @@ if __name__ == "__main__":
         "--sufix", "-s", help="File suffix", dest="sufix", default="bbb"
     )
     parser.add_argument("--stdout", help="log to stdout", action="store_true")
+    parser.add_argument(
+        "--max-bytes",
+        help="Log maxBytes",
+        dest="max_bytes",
+        default=100000000,
+        type=int,
+    )
+    parser.add_argument(
+        "--count", help="Log backupCount", dest="count", default=10, type=int
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.folder):
         os.makedirs(args.folder)
 
+    feedback_logger = logging.getLogger("feedback")
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter("%(asctime)-15s %(name)s %(levelname)s %(message)s")
+
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(formatter)
+    consoleHandler.setLevel(logging.INFO)
+
+    feedback_logger.addHandler(consoleHandler)
+
     if args.stdout:
-        consoleHandler = logging.StreamHandler()
-        consoleHandler.setFormatter(formatter)
-        consoleHandler.setLevel(logging.INFO)
         logger.addHandler(consoleHandler)
 
     else:
         handler = logging.handlers.RotatingFileHandler(
-            os.path.join(args.folder, "bbb.log"), maxBytes=100000000, backupCount=10
+            os.path.join(args.folder, "bbb.log"),
+            maxBytes=args.max_bytes,
+            backupCount=args.count,
         )
         handler.setFormatter(formatter)
         handler.setLevel(logging.DEBUG)
         logger.addHandler(handler)
 
-    logger.info("Starting logging server ... ")
+    feedback_logger.info("Starting logging server.")
+    feedback_logger.info("Settings {}".format(args))
     main(args.port)
