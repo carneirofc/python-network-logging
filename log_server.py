@@ -96,7 +96,7 @@ if __name__ == "__main__":
         "--port", "-p", help="Server port", dest="port", default=9020, type=int
     )
     parser.add_argument(
-        "--sufix", "-s", help="File suffix", dest="sufix", default="bbb"
+        "--sufix", "-s", help="File suffix", dest="sufix", default="net_logger"
     )
     parser.add_argument("--stdout", help="log to stdout", action="store_true")
     parser.add_argument(
